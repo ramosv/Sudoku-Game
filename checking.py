@@ -2,7 +2,6 @@
 
 ##I will be deviding this into 3 functions
 
-
 ##First checking if the row in matrix is legal
 ##For a row in sudoku to be legal, all 9 numbers must be unique from 1-9
 
@@ -10,7 +9,7 @@ def row_correct(sudoku: list,row_no:int):
 
     ##List.count(i) returns the number of times i is seen on     the list.
     for number in sudoku[row_no]:
-        if sudoku[row_no].count(number) > 1 and number is not 0:
+        if sudoku[row_no].count(number) > 1 and number != 0:
             return False
     return True
 
@@ -68,7 +67,7 @@ def sudoku_grid_correct(sudoku:list):
     return True
 
 if __name__ == "__main__":
-
+    ##Testing Functions
     ##FALSE,TRUE,FALSE
     sudoku1 = [
     [9, 0, 0, 0, 8, 0, 3, 0, 0],
