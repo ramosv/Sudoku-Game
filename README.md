@@ -16,10 +16,10 @@ Purpose of this project was to test common machine learning algothims and figure
 ### Data came from https://www.kaggle.com/datasets/rohanrao/sudoku
 
 ### Evaluating classification reports
-Precision: Accuracy of positive predictions
-Recall: Ratio of positive instances corretly detected
-F1-Score: Harmonic mean of precision and recall. Where a value of 1 means perfect precision and recall
-Support: Value of occurances of the class in the specified dataset
+* Precision: Accuracy of positive predictions
+* Recall: Ratio of positive instances corretly detected
+* F1-Score: Harmonic mean of precision and recall. Where a value of 1 means perfect precision and recall
+* Support: Value of occurances of the class in the specified dataset
 
 ### Random Forest
 The sample data is quite small being used is small, but it provides an insight in to how this model would perform.
@@ -76,10 +76,11 @@ weighted avg       0.10      0.12      0.06    129600
 
 
 Summary and questions.
-Both models are not performing well, CNN performs slightly better than randomly guessing.
-Models may not be representing the data, indicating that the nature of these models may not be suited for this task.
-It seems like they are struggling to understand the rules of the game.
+Both models are not performing well, CNN performs slightly better than randomly guessing.Models may not be representing the data, indicating that the nature of these models may not be suited for this task. It seems like they are struggling to understand the rules of the game.
+
 Now is there a way to incorporate the rules of the game into the models?
+
 Would hybrid approach between backtracking algorithm and one of these models be a solution?
-Is a different model better suited?
+
+Is a different model better suited? Maybe RNNs
 Recurrent Neutal Netoworks(RNNs): are able to handle sequences and retail memory. This model may perform better than CNN and RandomForest.
