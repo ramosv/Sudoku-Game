@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
 from keras.utils import to_categorical
 
 ##### Preprocess data to be used in a RandomForestClassifier Model #####
@@ -40,10 +40,26 @@ def preprocess_sudoku(s):
     return sudoku
 
 #### Pre-processing Data to be represented as a 2D grid to be used in a Convolutional Neural Network(CNN)
+def normalize_sudoku(sudoku):
+    return np.array(sudoku) / 9.0
+
+def augment_data(puzzle, solution):
+    augmented_puzzles = [puzzle, np.rot90(puzzle), np.fliplr(puzzle), np.flipud(puzzle)]
+    augmented_solutions = [solution, np.rot90(solution), np.fliplr(solution), np.flipud(solution)]
+    return augmented_puzzles, augmented_solutions
+
+def stratified_train_test_split(X, y, testSize=0.2):
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=testSize, random_state=42)
+    for train_index, test_index in sss.split(X, y):
+        X_train, X_test = np.array(X)[train_index], np.array(X)[test_index]
+        y_train, y_test = np.array(y)[train_index], np.array(y)[test_index]
+    return X_train, X_test, y_train, y_test
 
 def preprocess_sudoku2D(s):
     #Conver things into 2D arrays of strings
     return [list(map(int, list(s[i:i+9]))) for i in range(0, len(s), 9)]
+
+
 def process_solutions_2D(data):
     puzzles = data['puzzle'].tolist()
     solutions = data['solution'].tolist()
@@ -51,30 +67,26 @@ def process_solutions_2D(data):
     X, y = [], []
 
     for p, s in zip(puzzles, solutions):
-        puzzle_grid = preprocess_sudoku2D(p)
+        puzzle_grid = normalize_sudoku(preprocess_sudoku2D(p))
         solution_grid = preprocess_sudoku2D(s)
 
-        # Loop over each cell in the sudoku grid
-        for i in range(9):
-            for j in range(9):
-                # Make a deep copy of the puzzle grid
-                modified_puzzle = [row.copy() for row in puzzle_grid]
-                # Blank out the cell we are trying to predict
-                modified_puzzle[i][j] = 0
-                
-                X.append(modified_puzzle)
+        augmented_puzzles, augmented_solutions = augment_data(puzzle_grid, solution_grid)
 
-                #print("Value to be encoded:", solution_grid[i][j])
+        for aug_puzzle, aug_solution in zip(augmented_puzzles, augmented_solutions):
+            for i in range(9):
+                for j in range(9):
+                    modified_puzzle = [row.copy() for row in aug_puzzle]
+                    modified_puzzle[i][j] = 0
 
-                # We use to_categorical to convert the number into one-hot encoding
-                encoded_cell = to_categorical(solution_grid[i][j], num_classes=10)
-                #print("Shape of encoded cell:", encoded_cell.shape)
-                y.append(encoded_cell)
+                    X.append(modified_puzzle)
+
+                    encoded_cell = to_categorical(aug_solution[i][j], num_classes=10)
+                    y.append(encoded_cell)
 
     y = np.array(y)
-    #print("Shape of y:", y.shape)
 
     return X, y
+
 
 
 def process_solutions(data):
@@ -117,9 +129,7 @@ def preprocess_data(path):
 def preprocess_data_2D(path):
     data = load_data(path)
     puzzles, solutions = process_solutions_2D(data)
-
-    # Training and testing data for model
-    return training_testing_data(puzzles, solutions)
+    return stratified_train_test_split(puzzles, solutions)
 
 
 

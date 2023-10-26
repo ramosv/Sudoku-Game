@@ -30,8 +30,8 @@ print(classification_report(y_test,y_pred))
 
 X_train, X_test, y_train, y_test = preprocess_data_2D(file_path)
 
-print("Shape of y_train:", np.array(y_train).shape)
-print("Shape of y_test:", np.array(y_test).shape)
+#print("Shape of y_train:", np.array(y_train).shape)
+#print("Shape of y_test:", np.array(y_test).shape)
 
 X_train = np.array(X_train).reshape(-1, 9, 9, 1)
 X_test = np.array(X_test).reshape(-1, 9, 9, 1)
